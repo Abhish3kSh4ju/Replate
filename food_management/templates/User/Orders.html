@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User-Orders</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img { width: 110px; }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .menu-links { flex: 1; }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i { color: #6ab06a; font-size: 17px; }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a { color: #c0392b; }
+        .sidebar-logout a i { color: #c0392b; }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: 240px;
+            padding: 28px 24px;
+            min-height: 100vh;
+        }
+
+        .section-heading {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e4d1a;
+            margin-bottom: 20px;
+        }
+
+        /* ── FILTER TABS ── */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .filter-tab {
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(106, 176, 76, 0.35);
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5a7a5a;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            background: rgba(106, 176, 76, 0.1);
+            border-color: #6abf47;
+            color: #2d7a2d;
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(61, 143, 37, 0.25);
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 64px 24px;
+            text-align: center;
+        }
+
+        .empty-state i { font-size: 52px; margin-bottom: 16px; color: #b8d8b8; }
+
+        .empty-state p { font-size: 15px; font-weight: 500; color: #7a9a7a; }
+
+        /* ── ORDER CARD ── */
+        .order-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(50, 120, 50, 0.06);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: box-shadow 0.25s, transform 0.2s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 28px rgba(50, 120, 50, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-topbar { height: 4px; width: 100%; }
+
+        .status-pending   .card-topbar { background: linear-gradient(90deg, #f39c12, #f1c40f); }
+        .status-confirmed .card-topbar { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .status-ready     .card-topbar { background: linear-gradient(90deg, #6abf47, #3d8f25); }
+        .status-completed .card-topbar { background: linear-gradient(90deg, #27ae60, #1e8449); }
+        .status-cancelled .card-topbar { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+
+        .card-body-wrap { padding: 20px 22px; }
+
+        .card-header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .order-id-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #9ab09a;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .order-id-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        .order-date-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: #7a9a7a;
+        }
+
+        .order-date-wrap i { font-size: 13px; color: #6ab06a; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending   { background: rgba(243,156,18,0.12);  color: #d68910; }
+        .badge-confirmed { background: rgba(52,152,219,0.12);  color: #2471a3; }
+        .badge-ready     { background: rgba(106,191,71,0.13);  color: #2d8b1a; }
+        .badge-completed { background: rgba(39,174,96,0.12);   color: #1e8449; }
+        .badge-cancelled { background: rgba(231,76,60,0.12);   color: #c0392b; }
+
+        .card-divider {
+            height: 1px;
+            background: rgba(106, 176, 76, 0.12);
+            margin: 16px 0;
+        }
+
+        .food-row { display: flex; align-items: center; gap: 16px; }
+
+        .food-img-wrap {
+            width: 72px; height: 72px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: rgba(106, 176, 76, 0.08);
+            border: 1px solid rgba(106, 176, 76, 0.15);
+        }
+
+        .food-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+        .food-img-placeholder {
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #b8d8b0;
+        }
+
+        .food-name { font-size: 15px; font-weight: 600; color: #1e4d1a; margin-bottom: 3px; }
+
+        .food-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+
+        .food-meta-item { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: #6a8a6a; }
+        .food-meta-item i { font-size: 13px; color: #6ab06a; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .info-block {
+            background: rgba(106, 176, 76, 0.05);
+            border: 1px solid rgba(106, 176, 76, 0.12);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .info-block-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #9ab09a;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .info-block-label i { font-size: 12px; color: #6ab06a; }
+
+        .info-block-value { font-size: 13.5px; font-weight: 500; color: #2a3a2a; line-height: 1.4; }
+
+        /* ── STATUS STEPPER ── */
+        .status-stepper {
+            display: flex;
+            align-items: center;
+            margin-top: 18px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .status-stepper::-webkit-scrollbar { height: 4px; }
+        .status-stepper::-webkit-scrollbar-thumb { background: rgba(106,176,76,0.3); border-radius: 4px; }
+
+        .step { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+
+        .step-dot {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 2px solid #d0e8c8;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #c0d8c0;
+            z-index: 1;
+        }
+
+        .step.done .step-dot {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            border-color: transparent;
+            color: white;
+        }
+
+        .step.current .step-dot {
+            background: white;
+            border-color: #6abf47;
+            color: #3d8f25;
+            box-shadow: 0 0 0 4px rgba(106,191,71,0.18);
+        }
+
+        .step.cancelled .step-dot {
+            background: rgba(231,76,60,0.1);
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .step-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: #9ab09a;
+            margin-top: 5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .step.done .step-label,
+        .step.current .step-label { color: #3d8f25; font-weight: 600; }
+        .step.cancelled .step-label { color: #e74c3c; }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #d0e8c8;
+            min-width: 32px;
+            margin-bottom: 22px;
+        }
+
+        .step-line.done { background: linear-gradient(90deg, #6abf47, #3d8f25); }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>User Panel</span>
+        </div>
+
+        <div class="menu-links">
+            <a href="{% url 'Userpanel' %}"><i class="bi bi-house-door-fill"></i> Dashboard</a>
+            <a href="{% url 'Userprofile' %}"><i class="bi bi-person-circle"></i> My Profile</a>
+            <a href="{% url 'Orders' %}" class="active"><i class="bi bi-bag-fill"></i> Orders</a>
+            <a href="{% url 'Usernotification' %}"><i class="bi bi-bell-fill"></i> Notifications</a>
+            <a href="{% url 'Usercomplaints' %}"><i class="bi bi-exclamation-circle-fill"></i> Complaints</a>
+            <a href="{% url 'Userfeedback' %}"><i class="bi bi-chat-fill"></i> Feedback</a>
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        {% csrf_token %}
+        <h1 class="section-heading">My Orders</h1>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterOrders('all', this)">All</button>
+            <button class="filter-tab" onclick="filterOrders('pending', this)">Pending</button>
+            <button class="filter-tab" onclick="filterOrders('confirmed', this)">Confirmed</button>
+            <button class="filter-tab" onclick="filterOrders('ready', this)">Ready for Pickup</button>
+            <button class="filter-tab" onclick="filterOrders('completed', this)">Completed</button>
+            <button class="filter-tab" onclick="filterOrders('cancelled', this)">Cancelled</button>
+        </div>
+
+        <!-- Orders List -->
+        <div id="orders-container">
+
+            {% for order in orders %}
+            {% with status=order.status|lower %}
+            <div class="order-card status-{{ status }}" data-status="{{ status }}">
+                <div class="card-topbar"></div>
+                <div class="card-body-wrap">
+
+                    <!-- Header Row -->
+                    <div class="card-header-row">
+                        <div>
+                            <div class="order-id-label">Order ID</div>
+                            <div class="order-id-value">#{{ order.order_id }}</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <div class="order-date-wrap">
+                                <i class="bi bi-calendar3"></i>
+                                {{ order.order_date }}
+                            </div>
+                            <span class="status-badge badge-{{ status }}">
+                                {% if status == 'pending' %}<i class="bi bi-clock"></i> Pending
+                                {% elif status == 'confirmed' %}<i class="bi bi-check-circle"></i> Confirmed
+                                {% elif status == 'ready' %}<i class="bi bi-bag-check"></i> Ready for Pickup
+                                {% elif status == 'completed' %}<i class="bi bi-check2-all"></i> Completed
+                                {% elif status == 'cancelled' %}<i class="bi bi-x-circle"></i> Cancelled
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-divider"></div>
+
+                    <!-- Food Row -->
+                    <div class="food-row">
+                        <div class="food-img-wrap">
+                            {% if order.food_image %}
+                                <img src="{{ order.food_image }}" alt="{{ order.food_name }}">
+                            {% else %}
+                                <div class="food-img-placeholder"><i class="bi bi-egg-fried"></i></div>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="food-name">{{ order.food_name }}</div>
+                            <div class="food-meta">
+                                <span class="food-meta-item">
+                                    <i class="bi bi-stack"></i> Qty: {{ order.quantity }}
+                                </span>
+                                <span class="food-meta-item">
+                                    <i class="bi bi-shop"></i> {{ order.donor_name }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info Grid -->
+                    <div class="info-grid">
+                        <div class="info-block">
+                            <div class="info-block-label"><i class="bi bi-geo-alt-fill"></i> Pickup Location</div>
+                            <div class="info-block-value">{{ order.pickup_location }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-block-label"><i class="bi bi-clock-fill"></i> Pickup Date & Time</div>
+                            <div class="info-block-value">{{ order.pickup_datetime }}</div>
+                        </div>
+                    </div>
+
+                    {% if status == 'pending' or status == 'confirmed' %}
+                    <div class="text-end mt-3">
+                        <button class="btn btn-sm btn-outline-danger cancel-order-btn rounded-pill px-3" data-id="{{ order.order_id }}">
+                            <i class="bi bi-x-circle-fill"></i> Cancel Order
+                        </button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Status Stepper -->
+                    {% if status != 'cancelled' %}
+                    <div class="status-stepper">
+                        <div class="step {% if status == 'pending' %}current{% else %}done{% endif %}">
+                            <div class="step-dot"><i class="bi bi-clock"></i></div>
+                            <div class="step-label">Pending</div>
+                        </div>
+                        <div class="step-line {% if status == 'confirmed' or status == 'ready' or status == 'completed' %}done{% endif %}"></div>
+                        <div class="step {% if status == 'confirmed' %}current{% elif status == 'ready' or status == 'completed' %}done{% endif %}">
+                            <div class="step-dot"><i class="bi bi-check-circle"></i></div>
+                            <div class="step-label">Confirmed</div>
+                        </div>
+                        <div class="step-line {% if status == 'ready' or status == 'completed' %}done{% endif %}"></div>
+                        <div class="step {% if status == 'ready' %}current{% elif status == 'completed' %}done{% endif %}">
+                            <div class="step-dot"><i class="bi bi-bag-check"></i></div>
+                            <div class="step-label">Ready</div>
+                        </div>
+                        <div class="step-line {% if status == 'completed' %}done{% endif %}"></div>
+                        <div class="step {% if status == 'completed' %}done{% endif %}">
+                            <div class="step-dot"><i class="bi bi-check2-all"></i></div>
+                            <div class="step-label">Completed</div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="status-stepper">
+                        <div class="step cancelled">
+                            <div class="step-dot"><i class="bi bi-x-circle"></i></div>
+                            <div class="step-label">Order Cancelled</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            {% endwith %}
+            {% empty %}
+            <div class="empty-state">
+                <i class="bi bi-bag-x"></i>
+                <p>No orders yet. Browse available food and place your first order!</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <script>
+        function filterOrders(status, btn) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.order-card').forEach(card => {
+                card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+            });
+
+            const visible = [...document.querySelectorAll('.order-card')].filter(c => c.style.display !== 'none');
+            const dynEmpty = document.getElementById('dynamic-empty');
+            if (visible.length === 0) {
+                if (!dynEmpty) {
+                    const div = document.createElement('div');
+                    div.className = 'empty-state';
+                    div.id = 'dynamic-empty';
+                    div.innerHTML = '<i class="bi bi-bag-x"></i><p>No orders with this status.</p>';
+                    document.getElementById('orders-container').appendChild(div);
+                }
+            } else {
+                if (dynEmpty) dynEmpty.remove();
+            }
+        }
+
+        document.querySelectorAll('.cancel-order-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to cancel this order?')) {
+                    const orderId = this.dataset.id;
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    
+                    fetch("{% url 'cancel_order' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: new URLSearchParams({
+                            'order_id': orderId
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            location.reload();
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('An error occurred. Please try again.');
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

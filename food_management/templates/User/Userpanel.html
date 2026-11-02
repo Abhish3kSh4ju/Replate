@@ -1,0 +1,641 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Panel - Replate</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+        }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .menu-links {
+            flex: 1;
+        }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i {
+            color: #6ab06a;
+            font-size: 17px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b;
+        }
+
+        .menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            font-size: 26px;
+            color: #2d7a2d;
+            z-index: 1000;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(50, 120, 50, 0.1);
+        }
+
+        @media (max-width: 992px) {
+            .menu-btn {
+                display: flex;
+            }
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            z-index: 998;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        .main {
+            margin-left: 240px;
+            padding: 28px 24px;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+
+        @media (max-width: 992px) {
+            .main {
+                margin-left: 0;
+                padding-top: 64px;
+            }
+        }
+
+        .welcome-bar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(106, 176, 76, 0.2);
+            border-radius: 18px;
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(50, 120, 50, 0.07);
+        }
+
+        .welcome-bar .welcome-text h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e4d1a;
+            margin-bottom: 2px;
+        }
+
+        .welcome-bar .welcome-text p {
+            font-size: 13px;
+            color: #6a9e62;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .welcome-bar .date-badge {
+            background: rgba(106, 176, 76, 0.1);
+            border: 1px solid rgba(106, 176, 76, 0.25);
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-size: 12.5px;
+            color: #3a7d2c;
+            font-weight: 500;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 16px;
+            padding: 20px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 16px rgba(50, 120, 50, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(50, 120, 50, 0.12);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.total {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+        }
+
+        .stat-icon.veg {
+            background: rgba(34, 197, 94, 0.12);
+            color: #16a34a;
+        }
+
+        .stat-icon.nonveg {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .stat-info h6 {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: #8aaa85;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .stat-info h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e4d1a;
+            line-height: 1;
+        }
+
+        .section-heading {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e4d1a;
+            margin-bottom: 14px;
+            margin-top: 28px;
+        }
+
+        .food-type-card {
+            height: 190px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .food-type-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .food-type-card .bg-img {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.4s;
+        }
+
+        .food-type-card:hover .bg-img {
+            transform: scale(1.08);
+        }
+
+        .food-type-card .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.15) 60%, transparent 100%);
+        }
+
+        .food-type-card .label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-veg {
+            background: #00e676;
+            box-shadow: 0 0 6px #00e676;
+        }
+
+        .label-veg {
+            color: #00e676;
+        }
+
+        .food-type-card.veg-card:hover {
+            border-color: #00e676;
+            box-shadow: 0 8px 28px rgba(0, 230, 118, 0.25);
+        }
+
+        .dot-nonveg {
+            background: #ff5252;
+            box-shadow: 0 0 6px #ff5252;
+        }
+
+        .label-nonveg {
+            color: #ff5252;
+        }
+
+        .food-type-card.nonveg-card:hover {
+            border-color: #ff5252;
+            box-shadow: 0 8px 28px rgba(255, 82, 82, 0.25);
+        }
+
+        .dot-snacks {
+            background: #ffa726;
+            box-shadow: 0 0 6px #ffa726;
+        }
+
+        .label-snacks {
+            color: #ffa726;
+        }
+
+        .food-type-card.snacks-card:hover {
+            border-color: #ffa726;
+            box-shadow: 0 8px 28px rgba(255, 167, 38, 0.25);
+        }
+
+        .dot-bakery {
+            background: #f48fb1;
+            box-shadow: 0 0 6px #f48fb1;
+        }
+
+        .label-bakery {
+            color: #f48fb1;
+        }
+
+        .food-type-card.bakery-card:hover {
+            border-color: #f48fb1;
+            box-shadow: 0 8px 28px rgba(244, 143, 177, 0.25);
+        }
+
+        .dot-beverages {
+            background: #29b6f6;
+            box-shadow: 0 0 6px #29b6f6;
+        }
+
+        .label-beverages {
+            color: #29b6f6;
+        }
+
+        .food-type-card.beverages-card:hover {
+            border-color: #29b6f6;
+            box-shadow: 0 8px 28px rgba(41, 182, 246, 0.25);
+        }
+
+        .dot-desserts {
+            background: #ce93d8;
+            box-shadow: 0 0 6px #ce93d8;
+        }
+
+        .label-desserts {
+            color: #ce93d8;
+        }
+
+        .food-type-card.desserts-card:hover {
+            border-color: #ce93d8;
+            box-shadow: 0 8px 28px rgba(206, 147, 216, 0.25);
+        }
+
+        .food-card {
+            height: 180px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            box-shadow: 0 2px 12px rgba(50, 120, 50, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-4px);
+            border-color: #01ff3c;
+            box-shadow: 0 8px 24px rgba(50, 120, 50, 0.1);
+        }
+
+        .explore-btn {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            border: none;
+            padding: 11px 22px;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 14px rgba(60, 140, 36, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(60, 140, 36, 0.4);
+            opacity: 0.93;
+        }
+
+        .foodcard4 {
+            background: linear-gradient(rgba(128, 128, 128, 0.249), rgba(128, 128, 128, 0.249)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .donor-card-img {
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="menu-btn" onclick="toggleMenu()">
+        <i class="bi bi-list"></i>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <img src="{% static 'Re_plate logo.png' %}" alt="Replate Logo">
+            <span>User Panel</span>
+        </div>
+
+        <div class="menu-links">
+            <a href="{% url 'Userpanel' %}" class="active">
+                <i class="bi bi-house-door-fill"></i> Dashboard
+            </a>
+            <a href="{% url 'Userprofile' %}">
+                <i class="bi bi-person-circle"></i> My Profile
+            </a>
+            <a href="{% url 'Orders' %}">
+                <i class="bi bi-bag-fill"></i> Orders
+            </a>
+            <a href="{% url 'Usernotification' %}">
+                <i class="bi bi-bell-fill"></i> Notifications
+            </a>
+            <a href="{% url 'Usercomplaints' %}">
+                <i class="bi bi-exclamation-circle-fill"></i> Complaints
+            </a>
+            <a href="{% url 'Userfeedback' %}">
+                <i class="bi bi-chat-fill"></i> Feedback
+            </a>
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+        <!-- Welcome Bar -->
+        <div class="welcome-bar">
+            <div class="welcome-text">
+                <h2>Welcome back, User 👋</h2>
+                <p>Here's what's happening with your account today.</p>
+            </div>
+            <div class="date-badge">
+                <i class="bi bi-calendar3 me-1"></i>
+                <span id="today-date"></span>
+            </div>
+        </div>
+        <!-- Select Your Type -->
+        <p class="section-heading">Select Your Type</p>
+
+        <div class="row justify-content-start g-3">
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Veg' %}" style="text-decoration:none;">
+                    <div class="food-type-card veg-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-veg"></span><span class="label-veg">Veg</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Nonveg' %}" style="text-decoration:none;">
+                    <div class="food-type-card nonveg-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-nonveg"></span><span class="label-nonveg">Non-Veg</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Snacks' %}" style="text-decoration:none;">
+                    <div class="food-type-card snacks-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-snacks"></span><span class="label-snacks">Snacks</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Bakery' %}" style="text-decoration:none;">
+                    <div class="food-type-card bakery-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-bakery"></span><span class="label-bakery">Bakery</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Beverages' %}" style="text-decoration:none;">
+                    <div class="food-type-card beverages-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-beverages"></span><span
+                                class="label-beverages">Beverages</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <a href="{% url 'Dessert' %}" style="text-decoration:none;">
+                    <div class="food-type-card desserts-card">
+                        <div class="bg-img"
+                            style="background-image: url('https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600&auto=format&fit=crop');">
+                        </div>
+                        <div class="overlay"></div>
+                        <div class="label"><span class="dot dot-desserts"></span><span
+                                class="label-desserts">Desserts</span></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- end Select Your Type -->
+
+        <!-- Recommended Restaurants -->
+        <p class="section-heading">Recommended Restaurants Near You</p>
+
+        <div class="row g-3">
+            {% for donor in donors %}
+            <div class="col-md-3 col-6">
+                <a href="{% url 'Restaurantfoods' donor.id %}" style="text-decoration:none;">
+                    {% if donor.image %}
+                    <div class="food-card donor-card-img" style="background-image: url('{{ donor.image.url }}')"></div>
+                    {% else %}
+                    <div class="food-card donor-card-img"
+                        style="background-image: url('../static/default_restaurant.png')"></div>
+                    {% endif %}
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">No restaurants available right now.</p>
+            </div>
+            {% endfor %}
+
+            <div class="col-md-3 col-12">
+                <div class="food-card foodcard4">
+                    <a href="{% url 'Morerestaurants' %}"><button class="explore-btn">Explore More →</button></a>
+                </div>
+            </div>
+        </div>
+        <!-- end Recommended Restaurants -->
+
+    </div><!-- end .main -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+
+        const dateEl = document.getElementById('today-date');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('en-IN', {
+                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+            });
+        }
+    </script>
+
+</body>
+
+</html>

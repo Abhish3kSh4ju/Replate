@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Requests - Replate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+            transition: left 0.3s;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+        }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .menu-links {
+            flex: 1;
+        }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i {
+            color: #6ab06a;
+            font-size: 17px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b;
+        }
+
+        /* MENU BUTTON (mobile) */
+        .menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d7a2d;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(50, 120, 50, 0.1);
+        }
+
+        @media (max-width: 992px) {
+            .menu-btn {
+                display: flex;
+            }
+            .sidebar {
+                left: -260px;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .main {
+                margin-left: 0 !important;
+                padding-top: 70px;
+            }
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            z-index: 998;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 260px;
+            padding: 28px 24px;
+            transition: margin-left 0.3s;
+        }
+
+        /* WELCOME BAR */
+        .welcome-bar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(106, 176, 76, 0.2);
+            border-radius: 18px;
+            padding: 22px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(50, 120, 50, 0.07);
+        }
+
+        .welcome-text h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        .welcome-text p {
+            font-size: 13px;
+            color: #6a9e62;
+            margin: 0;
+        }
+
+        .date-badge {
+            background: rgba(106, 176, 76, 0.1);
+            border: 1px solid rgba(106, 176, 76, 0.25);
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-size: 12px;
+            color: #3a7d2c;
+        }
+
+        /* TABLE SECTION */
+        .table-section {
+            margin-top: 28px;
+        }
+
+        .custom-table-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 18px rgba(50, 120, 50, 0.06);
+        }
+
+        .table-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .table-title h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        .table-title span {
+            font-size: 13px;
+            color: #6a9e62;
+        }
+
+        .custom-table thead {
+            background: rgba(106, 176, 76, 0.12);
+        }
+
+        .custom-table thead th {
+            border: none;
+            padding: 14px;
+            color: #2d7a2d;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .custom-table tbody td {
+            padding: 14px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        /* BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-pending   { background: rgba(243,156,18,0.12);  color: #d68910; }
+        .badge-confirmed { background: rgba(52,152,219,0.12);  color: #2471a3; }
+        .badge-ready     { background: rgba(106,191,71,0.13);  color: #2d8b1a; }
+        .badge-completed { background: rgba(39,174,96,0.12);   color: #1e8449; }
+        .badge-cancelled { background: rgba(231,76,60,0.12);   color: #c0392b; }
+
+        /* ACTION BUTTONS */
+        .action-btn {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            color: white;
+            font-size: 12.5px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 8px rgba(60, 140, 36, 0.2);
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            opacity: 0.93;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 12px rgba(60, 140, 36, 0.3);
+        }
+
+        /* CANCEL BUTTON (was missing) */
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid #cde6ca !important;
+            padding: 8px 16px;
+            border-radius: 10px;
+            color: #5a6b5a;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: #f3f8f1;
+            color: #2d7a2d;
+        }
+
+        /* MODAL CUSTOMS */
+        .manage-modal-content {
+            border-radius: 18px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .manage-modal-content .modal-header {
+            background: linear-gradient(135deg, #2d7a2d, #6ab06a);
+            color: white;
+            border-bottom: none;
+            padding: 18px 24px;
+        }
+
+        .manage-modal-content .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+        }
+
+        .manage-modal-content .modal-body {
+            padding: 24px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #8aaa85;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #2a3a2a;
+            margin-bottom: 16px;
+        }
+
+        .form-select, .form-control {
+            border-radius: 10px;
+            border: 1px solid #cde6ca;
+            padding: 10px 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #6ab06a;
+            box-shadow: 0 0 0 3px rgba(106, 176, 76, 0.18);
+        }
+
+        /* TOAST */
+        .toast-wrap { position: fixed; bottom: 28px; right: 28px; z-index: 9999; }
+        .order-toast {
+            background: #1b5e20; color: #fff;
+            border-radius: 12px; padding: 13px 20px;
+            font-size: 14px; font-weight: 500;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 10px;
+            opacity: 0; transform: translateY(16px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+        .order-toast.show { opacity: 1; transform: translateY(0); }
+        .order-toast i { color: #69f0ae; font-size: 18px; }
+        .order-toast.error { background: #c0392b; }
+        .order-toast.error i { color: #ffcdd2; }
+    </style>
+</head>
+
+<body>
+    {% csrf_token %}
+
+    <!-- MENU BUTTON -->
+    <div class="menu-btn" onclick="toggleMenu()">
+        <i class="bi bi-list"></i>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>Donor Panel</span>
+        </div>
+
+        <div class="menu-links">
+            <a href="{% url 'Donorpanel' %}">
+                <i class="bi bi-house-door-fill"></i> Dashboard
+            </a>
+            <a href="{% url 'Donoraddfood' %}">
+                <i class="bi bi-plus-circle-fill"></i> Add Food
+            </a>
+            <a href="{% url 'Donorlisting' %}">
+                <i class="bi bi-card-checklist"></i> My Listings
+            </a>
+            <a href="{% url 'Donorrequest' %}" class="active">
+                <i class="bi bi-clipboard-check-fill"></i> Requests
+            </a>
+            <a href="{% url 'Donornotification' %}">
+                <i class="bi bi-bell-fill"></i> Notifications
+            </a>
+            <a href="{% url 'Donorcomplaint' %}">
+                <i class="bi bi-exclamation-circle-fill"></i> Complaints
+            </a>
+            <a href="{% url 'Donorfeedback' %}">
+                <i class="bi bi-chat-fill"></i> Feedback
+            </a>
+            <a href="{% url 'Donorprofile' %}">
+                <i class="bi bi-person-circle"></i> Profile
+            </a>
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- WELCOME BAR -->
+        <div class="welcome-bar">
+            <div class="welcome-text">
+                <h2>User Requests dashboard 👋</h2>
+                <p>Manage order requests from hungry individuals and groups.</p>
+            </div>
+            <div class="date-badge">
+                <i class="bi bi-calendar3 me-1"></i>
+                <span id="today-date"></span>
+            </div>
+        </div>
+
+        <!-- TABLE SECTION -->
+        <div class="table-section">
+            <div class="custom-table-card">
+                <div class="table-title">
+                    <h4>Incoming Food Requests</h4>
+                    <span>List of all users seeking food donations from your listings</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table custom-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User Profile</th>
+                                <th>Food Item</th>
+                                <th>Quantity Requested</th>
+                                <th>Request Date</th>
+                                <th>Status</th>
+                                <th>Pickup Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in requests %}
+                            {% with status=req.status|lower %}
+                            <tr>
+                                <td class="fw-bold">#{{ req.id }}</td>
+                                <td>
+                                    <div class="fw-semibold text-dark">{{ req.USERID.username|default:"N/A" }}</div>
+                                    <div class="text-muted" style="font-size: 11px;">
+                                        <i class="bi bi-phone"></i> {{ req.USERID.phone }}<br>
+                                        <i class="bi bi-geo-alt"></i> {{ req.USERID.address }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-success">{{ req.FOODINFOID.foodname }}</div>
+                                    <span class="badge bg-light text-success border border-success-subtle" style="font-size: 10px;">{{ req.FOODINFOID.foodtype }}</span>
+                                </td>
+                                <td class="fw-bold fs-6 text-center">{{ req.Quantity }}</td>
+                                <td>{{ req.date|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="status-badge badge-{{ status }}">
+                                        {% if status == 'pending' %}<i class="bi bi-clock"></i> Pending
+                                        {% elif status == 'confirmed' %}<i class="bi bi-check-circle"></i> Confirmed
+                                        {% elif status == 'ready' %}<i class="bi bi-bag-check"></i> Ready
+                                        {% elif status == 'completed' %}<i class="bi bi-check2-all"></i> Completed
+                                        {% elif status == 'cancelled' %}<i class="bi bi-x-circle"></i> Cancelled
+                                        {% else %}{{ req.status }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if req.pickuptime %}
+                                    <span class="text-primary fw-medium"><i class="bi bi-alarm-fill"></i> {{ req.pickuptime|time:"h:i A" }}</span>
+                                    {% else %}
+                                    <span class="text-muted fst-italic" style="font-size: 12.5px;">Not set yet</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if status != 'completed' and status != 'cancelled' %}
+                                    <button class="action-btn manage-btn"
+                                        data-id="{{ req.id }}"
+                                        data-username="{{ req.USERID.username }}"
+                                        data-foodname="{{ req.FOODINFOID.foodname }}"
+                                        data-quantity="{{ req.Quantity }}"
+                                        data-status="{{ req.status }}"
+                                        data-pickuptime="{{ req.pickuptime|time:'H:i'|default:'' }}">
+                                        <i class="bi bi-sliders"></i> Manage
+                                    </button>
+                                    {% else %}
+                                    <span class="text-muted" style="font-size: 12px;"><i class="bi bi-lock-fill"></i> Locked</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endwith %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-5 fs-5">
+                                    <i class="bi bi-clipboard-x fs-1 d-block mb-3 text-muted" style="opacity: 0.5;"></i>
+                                    No order requests received yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Status Modal -->
+    <div class="modal fade" id="manageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content manage-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-sliders"></i> Manage Request #<span id="modalReqId"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="manageReqId">
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="info-label">User / Requester</div>
+                            <div class="info-value" id="modalUserName"></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="info-label">Food Item</div>
+                            <div class="info-value" id="modalFoodName"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="info-label">Quantity Requested</div>
+                            <div class="info-value" id="modalQuantity"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="statusSelect" class="form-label fw-semibold text-dark">Update Status</label>
+                        <select class="form-select" id="statusSelect" onchange="toggleTimeInput()">
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed (Accept Order)</option>
+                            <option value="Ready">Ready for Pickup</option>
+                            <option value="Completed">Completed (Picked Up)</option>
+                            <option value="Cancelled">Cancelled (Reject/Cancel)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="pickupTimeContainer" style="display: none;">
+                        <label for="pickupTimeInput" class="form-label fw-semibold text-dark">Set Pickup Time</label>
+                        <input type="time" class="form-control" id="pickupTimeInput">
+                    </div>
+
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn-cancel border" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnSubmitStatus" class="action-btn" onclick="submitStatusUpdate()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Wrap -->
+    <div class="toast-wrap">
+        <div class="order-toast" id="orderToast">
+            <i class="bi bi-check-circle-fill" id="toastIcon"></i>
+            <span id="toastMsg"></span>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+
+        const dateEl = document.getElementById('today-date');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('en-IN', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        let manageModalInstance = null;
+
+        function openManageModal(id, userName, foodName, qty, status, pickupTime) {
+            document.getElementById('modalReqId').textContent = id;
+            document.getElementById('manageReqId').value = id;
+            document.getElementById('modalUserName').textContent = userName;
+            document.getElementById('modalFoodName').textContent = foodName;
+            document.getElementById('modalQuantity').textContent = qty + " items";
+            
+            const selectEl = document.getElementById('statusSelect');
+            selectEl.value = status;
+
+            const timeEl = document.getElementById('pickupTimeInput');
+            timeEl.value = pickupTime;
+
+            toggleTimeInput();
+
+            manageModalInstance = new bootstrap.Modal(document.getElementById('manageModal'));
+            manageModalInstance.show();
+        }
+
+        // Attach click handler to all "Manage" buttons via data attributes
+        // (avoids messy quote-escaping inside onclick="" strings)
+        document.querySelectorAll('.manage-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                openManageModal(
+                    btn.dataset.id,
+                    btn.dataset.username,
+                    btn.dataset.foodname,
+                    btn.dataset.quantity,
+                    btn.dataset.status,
+                    btn.dataset.pickuptime
+                );
+            });
+        });
+
+        function toggleTimeInput() {
+            const status = document.getElementById('statusSelect').value;
+            const container = document.getElementById('pickupTimeContainer');
+            if (status === 'Confirmed' || status === 'Ready') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function showToast(message, isError) {
+            const toast = document.getElementById('orderToast');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastMsg').textContent = message;
+
+            if (isError) {
+                toast.classList.add('error');
+                icon.className = 'bi bi-x-circle-fill';
+            } else {
+                toast.classList.remove('error');
+                icon.className = 'bi bi-check-circle-fill';
+            }
+
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function submitStatusUpdate() {
+            const reqId = document.getElementById('manageReqId').value;
+            const newStatus = document.getElementById('statusSelect').value;
+            const pickupTime = document.getElementById('pickupTimeInput').value;
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const saveBtn = document.getElementById('btnSubmitStatus');
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
+
+            fetch("{% url 'Donorrequest' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken
+                },
+                body: new URLSearchParams({
+                    'request_id': reqId,
+                    'status': newStatus,
+                    'pickuptime': pickupTime
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (manageModalInstance) manageModalInstance.hide();
+                showToast(data.message, !data.success);
+
+                if (data.success) {
+                    setTimeout(() => location.reload(), 1500);
+                }
+            })
+            .catch(() => {
+                if (manageModalInstance) manageModalInstance.hide();
+                showToast('Network error. Please try again.', true);
+            })
+            .finally(() => {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Save Changes';
+            });
+        }
+    </script>
+
+</body>
+
+</html>

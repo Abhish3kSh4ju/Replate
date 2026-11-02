@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Feedback</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('../static/replate_admin_background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(120, 180, 120, 0.25);
+            box-shadow: 4px 0 20px rgba(80, 150, 80, 0.08);
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 24px;
+            border-bottom: 1px solid rgba(120, 180, 120, 0.2);
+            margin-bottom: 12px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+            height: auto;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-brand span {
+            font-size: 11px;
+            font-weight: 500;
+            color: #7ab87a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            padding: 11px 22px;
+            text-decoration: none;
+            color: #3a3a3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 10px;
+            margin: 2px 12px;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+        }
+
+        .sidebar a i {
+            font-size: 17px;
+            color: #6ab06a;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            transform: translateX(4px);
+        }
+
+        .sidebar a:hover i {
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(90deg, rgba(100, 180, 100, 0.18), rgba(100, 180, 100, 0.06));
+            color: #2d7a2d;
+            font-weight: 500;
+            border-left: 3px solid #6ab06a;
+            padding-left: 19px;
+        }
+
+        .sidebar a.active i {
+            color: #2d7a2d;
+        }
+
+        .sidebar-logout {
+            margin-top: auto;
+            padding-bottom: 20px;
+            border-top: 1px solid rgba(120, 180, 120, 0.2);
+            padding-top: 10px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b !important;
+        }
+
+        .sidebar-logout a i {
+            color: #c0392b !important;
+        }
+
+        .sidebar-logout a:hover {
+            background: rgba(192, 57, 43, 0.08) !important;
+            color: #a93226 !important;
+        }
+
+        /* ── MAIN ── */
+        .main {
+            margin-left: 250px;
+            padding: 32px 28px;
+            min-height: 100vh;
+        }
+
+        .section-heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d2d1d;
+            margin-bottom: 28px;
+        }
+
+        /* ── CONTENT CARD ── */
+        .content-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(50, 120, 50, 0.07);
+            margin-bottom: 28px;
+        }
+
+        .card-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e4d1a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            font-size: 20px;
+            color: #6ab06a;
+        }
+
+        /* ── SCROLLABLE TABLE WRAPPER ── */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .table-scroll-wrapper {
+            max-height: 320px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid rgba(106, 176, 76, 0.15);
+        }
+
+        /* Custom scrollbar — green-themed */
+        .table-scroll-wrapper::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: rgba(106, 176, 76, 0.07);
+            border-radius: 10px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(106, 176, 76, 0.45);
+            border-radius: 10px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: rgba(61, 143, 37, 0.65);
+        }
+
+        /* ── TABLE ── */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* Sticky header inside scroll container */
+        .table-custom thead tr th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: rgba(225, 242, 215, 0.97);
+            backdrop-filter: blur(6px);
+            color: #1e4d1a;
+            font-weight: 600;
+            font-size: 13.5px;
+            padding: 13px 16px;
+            text-align: left;
+            border-bottom: 2px solid rgba(106, 176, 76, 0.22);
+            white-space: nowrap;
+        }
+
+        .table-custom thead tr th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        .table-custom thead tr th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        .table-custom tbody tr td {
+            padding: 13px 16px;
+            font-size: 13.5px;
+            color: #3a4a3a;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.1);
+            vertical-align: middle;
+        }
+
+        .table-custom tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-custom tbody tr:hover td {
+            background: rgba(106, 176, 76, 0.03);
+        }
+
+        /* feedback text truncate */
+        .feedback-text {
+            max-width: 260px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ── INLINE REPLY BOX ── */
+        .reply-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 260px;
+        }
+
+        .reply-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid rgba(106, 176, 76, 0.35);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            color: #3a4a3a;
+            background: rgba(255, 255, 255, 0.95);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .reply-input:focus {
+            border-color: #6abf47;
+            box-shadow: 0 0 0 3px rgba(106, 191, 71, 0.15);
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-send:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        /* ── DELETE BUTTON ── */
+        .btn-delete {
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            background: rgba(192, 57, 43, 0.1);
+            color: #c0392b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>Admin Panel</span>
+        </div>
+
+        <a href="{% url 'Adminpanel' %}">
+            <i class="bi bi-house-door-fill"></i> Dashboard
+        </a>
+
+        <a href="{% url 'Adminusers' %}">
+            <i class="bi bi-person-check-fill"></i> Verification
+        </a>
+
+         <a href="{% url 'Adminfoodinfo' %}">
+           <i class="bi bi-cup-hot-fill"></i> Food Info
+        </a>
+
+        <a href="{% url 'Admincomplaints' %}">
+            <i class="bi bi-chat-dots-fill"></i> Complaints
+        </a>
+
+        <a href="{% url 'Adminfeedback' %}" class="active">
+            <i class="bi bi-star-fill"></i> View Feedback
+        </a>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <h1 class="section-heading">Feedback</h1>
+
+        <!-- ── User Feedback ── -->
+        <div class="content-card">
+            <div class="card-title">
+                <i class="bi bi-person-fill"></i> User Feedback
+            </div>
+            <div class="table-wrapper">
+                <div class="table-scroll-wrapper">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>User Name</th>
+                                <th>Rating</th>
+                                <th>Feedback</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for feedback in user_feedbacks %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ feedback.USERID.username }}</td>
+                                <td>{{ feedback.rating}}</td>
+                                <td>
+                                    <div class="feedback-text" title="{{ feedback.message }}">
+                                        {{ feedback.feedback }}
+                                    </div>
+                                </td>
+                                <td>{{ feedback.date }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'Adminfeedback' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_feedback_id" value="{{ feedback.id }}">
+                                        <input type="hidden" name="feedback_type" value="user">
+                                        <button type="submit" class="btn-delete">
+                                            <i class="bi bi-trash3-fill"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align:center; color:#888; padding:28px;">
+                                    No user feedback found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Donor Feedback ── -->
+        <div class="content-card">
+            <div class="card-title">
+                <i class="bi bi-heart-fill"></i> Donor Feedback
+            </div>
+            <div class="table-wrapper">
+                <div class="table-scroll-wrapper">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Donor Name</th>
+                                <th>Feedback</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for feedback in donor_feedback %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ feedback.DONORID.donorname }}</td>
+                                <td>
+                                    <div class="feedback-text" title="{{ feedback.message }}">
+                                        {{ feedback.feedback }}
+                                    </div>
+                                </td>
+                                <td>{{ feedback.date }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'Adminfeedback' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_feedback_id" value="{{ feedback.id }}">
+                                        <input type="hidden" name="feedback_type" value="donor">
+                                        <button type="submit" class="btn-delete">
+                                            <i class="bi bi-trash3-fill"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align:center; color:#888; padding:28px;">
+                                    No donor feedback found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

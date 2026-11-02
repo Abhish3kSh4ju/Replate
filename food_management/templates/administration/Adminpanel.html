@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('../static/replate_admin_background.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(120, 180, 120, 0.25);
+            box-shadow: 4px 0 20px rgba(80, 150, 80, 0.08);
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px 24px;
+            border-bottom: 1px solid rgba(120, 180, 120, 0.2);
+            margin-bottom: 12px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+            height: auto;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-brand span {
+            font-size: 11px;
+            font-weight: 500;
+            color: #7ab87a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar a {
+            padding: 11px 22px;
+            text-decoration: none;
+            color: #3a3a3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 10px;
+            margin: 2px 12px;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+        }
+
+        .sidebar a i {
+            font-size: 17px;
+            color: #6ab06a;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            transform: translateX(4px);
+        }
+
+        .sidebar a:hover i {
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: linear-gradient(90deg, rgba(100, 180, 100, 0.18), rgba(100, 180, 100, 0.06));
+            color: #2d7a2d;
+            font-weight: 500;
+            border-left: 3px solid #6ab06a;
+            padding-left: 19px;
+        }
+
+        .sidebar a.active i {
+            color: #2d7a2d;
+        }
+
+        .sidebar-logout {
+            margin-top: auto;
+            padding-bottom: 20px;
+            border-top: 1px solid rgba(120, 180, 120, 0.2);
+            padding-top: 10px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b !important;
+        }
+
+        .sidebar-logout a i {
+            color: #c0392b !important;
+        }
+
+        .sidebar-logout a:hover {
+            background: rgba(192, 57, 43, 0.08) !important;
+            color: #a93226 !important;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .content {
+            margin-left: 250px;
+            padding: 30px 28px;
+            min-height: 100vh;
+            transition: margin 0.3s ease;
+        }
+
+        .welcome-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .welcome-bar h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d2d1d;
+        }
+
+        .Hero-subheading {
+            font-size: 18px;
+        }
+
+        .Top-action {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .Searchbar {
+            width: 330px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgb(120, 180, 120, 0.18);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .Searchbar input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .Searchbar i {
+            color: #5aa95a;
+        }
+
+        .welcome-bar .date-badge {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(120, 180, 120, 0.3);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: #5a8a5a;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* ── STAT CARDS ── */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(120, 180, 120, 0.2);
+            border-radius: 16px;
+            padding: 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(80, 150, 80, 0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(80, 150, 80, 0.14);
+        }
+
+        .stat-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.12);
+            color: #3b82f6;
+        }
+
+        .stat-icon.green {
+            background: rgba(34, 197, 94, 0.12);
+            color: #16a34a;
+        }
+
+        .stat-icon.orange {
+            background: rgba(249, 115, 22, 0.12);
+            color: #ea6f1a;
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.12);
+            color: #dc2626;
+        }
+
+        .stat-info h6 {
+            font-size: 12px;
+            font-weight: 500;
+            color: #888;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-info h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #2c2c2c;
+            line-height: 1;
+        }
+
+        /* ── TABLE SECTION ── */
+        .table-section {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(120, 180, 120, 0.2);
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 20px rgba(80, 150, 80, 0.07);
+            margin-top: 28px;
+        }
+
+        .table-section h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-section h4 a {
+            font-size: 12px;
+            font-weight: 500;
+            color: #5a8a5a;
+            text-decoration: none;
+        }
+
+        .table-section h4 a:hover {
+            color: #2d7a2d;
+            text-decoration: underline;
+        }
+
+        .table thead tr th {
+            background: rgba(100, 180, 100, 0.12);
+            color: #3a6e3a;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            padding: 12px 16px;
+        }
+
+        .table tbody tr td {
+            font-size: 13.5px;
+            color: #444;
+            vertical-align: middle;
+            padding: 12px 16px;
+            border-color: rgba(120, 180, 120, 0.1);
+        }
+
+        .table tbody tr:hover td {
+            background: rgba(100, 180, 100, 0.05);
+        }
+
+        .badge.bg-success {
+            background: rgba(22, 163, 74, 0.15) !important;
+            color: #15803d;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .badge.bg-warning {
+            background: rgba(234, 179, 8, 0.15) !important;
+            color: #a16207 !important;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .badge.bg-danger {
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #dc2626 !important;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* ── QUICK ACTIONS (ADDED) ── */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(120, 180, 120, 0.25);
+            border-radius: 12px;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            color: #2c2c2c;
+            font-size: 11.5px;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .quick-action-btn i {
+            font-size: 16px;
+            color: #2d7a2d;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(100, 180, 100, 0.14);
+            transform: translateY(-3px);
+            color: #2d7a2d;
+        }
+
+        /* ── RECENT ACTIVITY FEED (ADDED) ── */
+        .activity-feed {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .activity-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .activity-dot.green {
+            background: rgba(34, 197, 94, 0.14);
+            color: #16a34a;
+        }
+
+        .activity-dot.blue {
+            background: rgba(59, 130, 246, 0.14);
+            color: #3b82f6;
+        }
+
+        .activity-dot.orange {
+            background: rgba(249, 115, 22, 0.14);
+            color: #ea6f1a;
+        }
+
+        .activity-dot.red {
+            background: rgba(239, 68, 68, 0.14);
+            color: #dc2626;
+        }
+
+        .activity-text p {
+            font-size: 13px;
+            color: #3a3a3a;
+            margin-bottom: 2px;
+        }
+
+        .activity-text span {
+            font-size: 11.5px;
+            color: #999;
+        }
+
+        /* ── MOBILE TOPBAR ── */
+        .topbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 150;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(120, 180, 120, 0.25);
+            padding: 12px 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar .brand-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2d7a2d;
+        }
+
+        .topbar .hamburger {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #3a6e3a;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* ── RESPONSIVE BREAKPOINTS ── */
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                display: flex;
+            }
+
+            .content {
+                margin-left: 0;
+                padding: 20px 16px;
+            }
+
+            .welcome-bar h2 {
+                font-size: 24px;
+            }
+
+            .Hero-subheading {
+                font-size: 15px;
+            }
+
+            .Searchbar {
+                width: 100%;
+            }
+
+            .Top-action {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .welcome-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .Top-action {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-badge {
+                text-align: center;
+            }
+
+            .welcome-bar h2 {
+                font-size: 20px;
+            }
+
+            .stat-info h3 {
+                font-size: 22px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .topbar {
+                display: none !important;
+            }
+
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Mobile Topbar -->
+    <div class="topbar" id="topbar">
+        <button class="hamburger" onclick="toggleSidebar()" aria-label="Open menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <span class="brand-name">Replate Admin</span>
+        <div></div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>Admin Panel</span>
+        </div>
+
+        <a href="{% url 'Adminpanel' %}" class="active">
+            <i class="bi bi-house-door-fill"></i> Dashboard
+        </a>
+
+        <a href="{% url 'Adminusers' %}">
+            <i class="bi bi-person-check-fill"></i> Verification
+        </a>
+
+        <a href="{% url 'Adminfoodinfo' %}">
+            <i class="bi bi-cup-hot-fill"></i> Food Info
+        </a>
+
+        <a href="{% url 'Admincomplaints' %}">
+            <i class="bi bi-chat-dots-fill"></i> Complaints
+        </a>
+
+        <a href="{% url 'Adminfeedback' %}">
+            <i class="bi bi-star-fill"></i> View Feedback
+        </a>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        {% block body %}
+
+        <!-- Welcome Bar -->
+        <div class="welcome-bar">
+            <div>
+                <h2>Good Morning, Admin 👋</h2>
+                <p class="Hero-subheading">Here's today's food rescue activity and platform insights.</p>
+            </div>
+
+            <div class="Top-action">
+                <div class="date-badge">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    <span id="today-date"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="row g-3">
+
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Total Users</h6>
+                        <h3>{{total_users}}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Restaurants</h6>
+                        <h3>{{total_donors}}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="bi bi-cart-fill"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Orders</h6>
+                        <h3>{{total_orders}}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon red">
+                        <i class="bi bi-recycle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h6>Food Saved</h6>
+                        <h3>{{total_food_saved}}</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Recent Orders + Side Panel -->
+        <div class="row g-3 mt-1 align-items-start">
+
+            <!-- Recent Orders Table -->
+            <div class="col-12 col-lg-8">
+                <div class="table-section">
+                    <h4><span><i class="bi bi-clock-history me-2 text-success"></i>Recent Orders</span></h4>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Food</th>
+                                    <th>Restaurant</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td>{{ order.USERID.username|default:"—" }}</td>
+                                    <td>{{ order.FOODINFOID.foodname|default:"—" }}</td>
+                                    <td>{{ order.FOODINFOID.DONORID.donorname|default:"—" }}</td>
+                                    <td>
+                                        {% if order.status == "Completed" %}
+                                        <span class="badge bg-success">{{ order.status }}</span>
+                                        {% elif order.status == "Cancelled" %}
+                                        <span class="badge bg-danger">{{ order.status }}</span>
+                                        {% else %}
+                                        <span class="badge bg-warning text-dark">{{ order.status|default:"Pending" }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-muted">No orders yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions + Activity Feed (ADDED) -->
+            <div class="col-12 col-lg-4">
+                <div class="table-section mb-3">
+                    <h4>Quick Actions</h4>
+                    <div class="quick-actions">
+                        <a href="{% url 'Adminusers' %}" class="quick-action-btn">
+                            <i class="bi bi-person-check-fill"></i>
+                            Verify Users
+                        </a>
+                        <a href="{% url 'Adminfoodinfo' %}" class="quick-action-btn">
+                            <i class="bi bi-cup-hot-fill"></i>
+                            Food Info
+                        </a>
+                        <a href="{% url 'Admincomplaints' %}" class="quick-action-btn">
+                            <i class="bi bi-chat-dots-fill"></i>
+                            Complaints
+                        </a>
+                        <a href="{% url 'Adminfeedback' %}" class="quick-action-btn">
+                            <i class="bi bi-star-fill"></i>
+                            Feedback
+                        </a>
+                    </div>
+                </div>
+
+                <div class="table-section">
+                    <h4>Recent Activity</h4>
+                    <ul class="activity-feed">
+                        {% for activity in recent_activities %}
+                        <li class="activity-item">
+                            <div class="activity-dot {{ activity.color }}">
+                                <i class="bi {{ activity.icon }}"></i>
+                            </div>
+                            <div class="activity-text">
+                                <p>{{ activity.text }}</p>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="activity-item">
+                            <div class="activity-text">
+                                <p class="text-muted">No recent activity yet.</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        {% endblock %}
+
+    </div>
+
+    <script>
+        // Show today's date in the welcome bar
+        const dateEl = document.getElementById('today-date');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('en-IN', {
+                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+            });
+        }
+
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('show');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        }
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 992) closeSidebar();
+        });
+    </script>
+
+</body>
+
+</html>

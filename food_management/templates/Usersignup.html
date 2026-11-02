@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Sign Up - Replate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* ── BACKGROUND ── */
+        .main-container {
+            min-height: 100vh;
+            background: url('../static/replate_user_register.png') center center / cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            overflow: hidden;
+        }
+
+        .inner-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 1050px;
+            gap: 40px;
+        }
+
+        /* ── LEFT TEXT ── */
+        .intro-text {
+            flex: 1;
+            padding: 40px 20px;
+            animation: slideInLeft 0.8s ease both;
+        }
+
+        .intro-text h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 50px;
+            font-weight: 700;
+            color: #1e4d1a;
+            line-height: 1.2;
+            margin-bottom: 18px;
+        }
+
+        .intro-text h1 span {
+            color: #5aaa35;
+        }
+
+        .intro-text p {
+            font-size: 15.5px;
+            font-weight: 300;
+            color: #4a6e42;
+            line-height: 1.8;
+            max-width: 420px;
+        }
+
+        /* ── SIGNUP CARD ── */
+        .signup-card {
+            width: 100%;
+            max-width: 430px;
+            padding: 36px 36px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(106, 176, 76, 0.25);
+            box-shadow:
+                0 20px 60px rgba(50, 120, 50, 0.12),
+                0 2px 8px rgba(50, 120, 50, 0.06);
+            flex-shrink: 0;
+            animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        /* Logo */
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .logo-wrapper img {
+            width: 130px;
+            height: auto;
+            display: inline-block;
+        }
+
+        /* Divider */
+        .card-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(106,176,76,0.3), transparent);
+            margin-bottom: 20px;
+        }
+
+        /* Card heading */
+        .card-heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card-heading h5 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e4d1a;
+            margin-bottom: 2px;
+        }
+
+        .card-heading p {
+            font-size: 12px;
+            color: #6a9e62;
+            font-weight: 400;
+        }
+
+        /* Labels */
+        .signup-card label {
+            font-size: 12.5px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            color: #3a6e34;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* Inputs */
+        .form-control {
+            background: rgba(240, 250, 240, 0.8) !important;
+            border: 1.5px solid rgba(106, 176, 76, 0.3) !important;
+            color: #1e3d1a !important;
+            box-shadow: none !important;
+            border-radius: 12px !important;
+            padding: 10px 14px !important;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13.5px;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control::placeholder {
+            color: rgba(80, 130, 70, 0.5);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: #5aaa35 !important;
+            box-shadow: 0 0 0 3px rgba(90, 170, 53, 0.12) !important;
+            color: #1e3d1a !important;
+        }
+
+        /* Autofill fix */
+        .form-control:-webkit-autofill,
+        .form-control:-webkit-autofill:hover,
+        .form-control:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 999px rgba(240, 250, 240, 0.95) inset !important;
+            -webkit-text-fill-color: #1e3d1a !important;
+            border: 1.5px solid rgba(106, 176, 76, 0.3) !important;
+        }
+
+        /* Select dropdown */
+        select.form-control option {
+            background: #fff;
+            color: #1e3d1a;
+        }
+
+        /* Textarea */
+        textarea.form-control {
+            height: 80px;
+            resize: none;
+        }
+
+        /* Password toggle */
+        .password-container {
+            position: relative;
+        }
+
+        .password-container i {
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7ab870;
+            font-size: 15px;
+            transition: color 0.2s;
+            margin-top: 10px;
+        }
+
+        .password-container i:hover {
+            color: #3a7d2c;
+        }
+
+        /* Register button */
+        .btn-register {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #fff;
+            width: 100%;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 6px 20px rgba(60, 140, 36, 0.3);
+            margin-top: 4px;
+            cursor: pointer;
+        }
+
+        .btn-register:hover {
+            opacity: 0.93;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(60, 140, 36, 0.4);
+            color: #fff;
+        }
+
+        .btn-register:active {
+            transform: scale(0.98);
+        }
+
+        /* Login redirect */
+        .login-text {
+            font-size: 13px;
+            color: #5a7a55;
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        .login-text a {
+            color: #3a8c20;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(60px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── TABLET ── */
+        @media (max-width: 991px) {
+            .inner-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+                padding: 20px 0;
+            }
+
+            .intro-text {
+                text-align: center;
+                padding: 20px 24px 0;
+                animation: slideInDown 0.7s ease both;
+            }
+
+            .intro-text h1 { font-size: 38px; }
+            .intro-text p  { font-size: 14px; margin: 0 auto; }
+
+            .signup-card {
+                max-width: 460px;
+                width: 92%;
+                animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            }
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 575px) {
+            .main-container {
+                padding: 20px 14px;
+                align-items: flex-start;
+                padding-top: 30px;
+            }
+
+            .intro-text h1 { font-size: 28px; }
+            .intro-text p  { font-size: 13px; }
+
+            .signup-card {
+                width: 100%;
+                max-width: 100%;
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+
+            .logo-wrapper img { width: 110px; }
+
+            .form-control {
+                font-size: 13px !important;
+                padding: 9px 12px !important;
+            }
+
+            .btn-register {
+                font-size: 14px;
+                padding: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <div class="inner-row">
+
+            <!-- LEFT -->
+            <div class="intro-text">
+                <h1>Create Your<br><span>Account</span></h1>
+                <p>
+                    Sign up to start ordering surplus food at great prices
+                    and help build a sustainable, hunger-free community.
+                </p>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="signup-card">
+
+                <div class="logo-wrapper">
+                    <img src="../static/Re_plate logo.png" alt="Replate Logo">
+                </div>
+
+                <div class="card-divider"></div>
+
+                <div class="card-heading">
+                    <h5>User Registration</h5>
+                    <p>Fill in your details to get started</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="role" value="user">
+
+                    <div class="mb-3">
+                        <label><i class="bi bi-person me-1"></i>Full Name</label>
+                        <input type="text" name="username" class="form-control"
+                                placeholder="Enter your username" name="username" required pattern="[A-Z,a-z.]{3,25}" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label><i class="bi bi-envelope me-1"></i>Email Address</label>
+                        <input type="email" name="email" class="form-control"
+                               placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label><i class="bi bi-phone me-1"></i>Phone Number</label>
+                        <input type="text" name="phone" class="form-control"
+                               placeholder="Enter your phone number" name="phonenumber" pattern="[6,7,8,9][0-9]{9}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label><i class="bi bi-person-badge me-1"></i>Gender</label>
+                        <select name="gender" class="form-control" required>
+                            <option value="">Select Gender</option>
+                            <option for="male" checked>Male</option>
+                            <option for="female" checked>Female</option>
+                            <optionfor="other" checked>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label><i class="bi bi-geo-alt me-1"></i>Address</label>
+                        <textarea name="address" class="form-control"
+                                  placeholder="Enter your address" required></textarea>
+                    </div>
+
+                    <div class="mb-3 password-container">
+                        <label></i>Password</label>
+                        <input type="password" id="password" name="password"
+                               class="form-control" placeholder="Enter your password" name="password"  pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$!]){8,}"
+                                    title="Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number." required>
+                        <i class="bi bi-eye-slash" id="togglePassword"></i>
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <i class="bi bi-person-check me-2"></i>Register
+                    </button>
+
+                    <p class="login-text">
+                        Already have an account?
+                        <a href="/">Sign in</a>
+                    </p>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const togglePassword = document.querySelector("#togglePassword");
+        const password = document.querySelector("#password");
+
+        togglePassword.addEventListener("click", function () {
+            const type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+            this.classList.toggle("bi-eye");
+            this.classList.toggle("bi-eye-slash");
+        });
+    </script>
+
+</body>
+</html>

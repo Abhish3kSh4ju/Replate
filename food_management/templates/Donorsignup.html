@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Sign Up - Replate</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{min-height:100vh;font-family:'Poppins',sans-serif}
+
+        .main-container{
+            min-height:100vh;
+            background:url('../static/replate_user_register.png') center center/cover no-repeat;
+            display:flex;align-items:center;justify-content:center;
+            padding:30px 20px;overflow:hidden;
+        }
+
+        .inner-row{
+            display:flex;flex-direction:row;align-items:center;
+            justify-content:center;width:100%;max-width:1100px;gap:40px;
+        }
+
+        /* LEFT */
+        .intro-text{flex:1;padding:40px 20px}
+        .intro-text h1{font-size:50px;font-weight:700;color:#1e4d1a;line-height:1.2;margin-bottom:18px}
+        .intro-text h1 span{color:#5aaa35}
+        .intro-text p{font-size:15px;color:#4a6e42;line-height:1.8;max-width:420px}
+
+        /* CARD */
+        .signup-card{
+            width:100%;max-width:450px;padding:36px;border-radius:24px;
+            background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);
+            border:1px solid rgba(106,176,76,0.25);
+            box-shadow:0 20px 60px rgba(50,120,50,0.12),0 2px 8px rgba(50,120,50,0.06);
+        }
+
+        .logo-wrapper{text-align:center;margin-bottom:16px}
+        .logo-wrapper img{width:130px}
+
+        .card-divider{
+            height:1px;
+            background:linear-gradient(90deg,transparent,rgba(106,176,76,0.3),transparent);
+            margin-bottom:20px;
+        }
+
+        .card-heading{text-align:center;margin-bottom:20px}
+        .card-heading h5{font-size:16px;font-weight:600;color:#1e4d1a}
+        .card-heading p{font-size:12px;color:#6a9e62}
+
+        .signup-card label{font-size:13px;font-weight:500;color:#3a6e34;margin-bottom:5px;display:block}
+
+        .form-control{
+            background:rgba(240,250,240,0.8)!important;
+            border:1.5px solid rgba(106,176,76,0.3)!important;
+            color:#1e3d1a!important;box-shadow:none!important;
+            border-radius:12px!important;padding:11px 14px!important;font-size:13.5px;
+        }
+        .form-control::placeholder{color:rgba(80,130,70,0.5)}
+        .form-control:focus{
+            background:rgba(255,255,255,0.95)!important;
+            border-color:#5aaa35!important;
+            box-shadow:0 0 0 3px rgba(90,170,53,0.12)!important;
+        }
+        textarea.form-control{height:90px;resize:none}
+
+        /* PASSWORD */
+        .password-container{position:relative}
+        .password-container i.toggle-eye{
+            position:absolute;top:50%;right:13px;
+            transform:translateY(-50%);cursor:pointer;
+            color:#7ab870;font-size:15px;margin-top:10px;
+        }
+
+        /* ── IMAGE UPLOAD ── */
+        .upload-label{
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            gap:8px;
+            border:2px dashed rgba(106,176,76,0.45);
+            border-radius:16px;
+            padding:22px 16px;
+            cursor:pointer;
+            background:rgba(240,250,240,0.6);
+            transition:border-color 0.2s,background 0.2s;
+            position:relative;
+            overflow:hidden;
+        }
+        .upload-label:hover{border-color:#5aaa35;background:rgba(90,170,53,0.07)}
+
+        .upload-label .upload-icon{
+            width:52px;height:52px;border-radius:50%;
+            background:rgba(90,170,53,0.12);
+            display:flex;align-items:center;justify-content:center;
+            font-size:22px;color:#3d8f25;
+            transition:transform 0.2s;
+        }
+        .upload-label:hover .upload-icon{transform:scale(1.08)}
+
+        .upload-label .upload-text{
+            font-size:13px;font-weight:500;color:#3a6e34;text-align:center;line-height:1.5;
+        }
+        .upload-label .upload-hint{font-size:11px;color:#8aaa85}
+
+        /* hidden real input */
+        #profileImage{display:none}
+
+        /* preview */
+        #imagePreviewWrap{
+            display:none;
+            position:relative;
+            width:90px;height:90px;margin:0 auto 6px;
+        }
+        #imagePreview{
+            width:90px;height:90px;border-radius:50%;
+            object-fit:cover;
+            border:3px solid rgba(90,170,53,0.4);
+            box-shadow:0 4px 14px rgba(50,120,50,0.15);
+        }
+        #removeImage{
+            position:absolute;top:-4px;right:-4px;
+            width:22px;height:22px;border-radius:50%;
+            background:#dc2626;border:2px solid #fff;
+            color:#fff;font-size:11px;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* BUTTON */
+        .btn-register{
+            background:linear-gradient(135deg,#6abf47,#3d8f25);
+            border:none;border-radius:12px;padding:12px;
+            font-size:15px;font-weight:600;color:#fff;width:100%;
+            transition:0.2s;box-shadow:0 6px 20px rgba(60,140,36,0.3);margin-top:5px;
+        }
+        .btn-register:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(60,140,36,0.4)}
+
+        .login-text{font-size:13px;color:#5a7a55;text-align:center;margin-top:14px}
+        .login-text a{color:#3a8c20;text-decoration:none;font-weight:600}
+        .login-text a:hover{text-decoration:underline}
+
+        @media(max-width:991px){
+            .inner-row{flex-direction:column;gap:20px}
+            .intro-text{text-align:center}
+            .intro-text p{margin:auto}
+            .intro-text h1{font-size:38px}
+        }
+        @media(max-width:575px){
+            .main-container{padding:20px 14px}
+            .intro-text h1{font-size:28px}
+            .signup-card{padding:24px 18px}
+        }
+    </style>
+</head>
+
+<body>
+<div class="main-container">
+  <div class="inner-row">
+
+    <!-- LEFT -->
+    <div class="intro-text">
+      <h1>Become a <br><span>Food Donor</span></h1>
+      <p>Register as a donor to share your surplus food with those who need it most. Together we can eliminate waste and build a hunger-free community.</p>
+    </div>
+
+    <!-- CARD -->
+    <div class="signup-card">
+
+      <div class="logo-wrapper">
+        <img src="../static/Re_plate logo.png" alt="Logo">
+      </div>
+
+      <div class="card-divider"></div>
+
+      <div class="card-heading">
+        <h5>Donor Registration</h5>
+        <p>Fill in your details to get started</p>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        <input type="hidden" name="role" value="donor">
+
+        <!-- PROFILE PHOTO -->
+        <div class="mb-3">
+          <label><i class="bi bi-person-bounding-boxme-1"></i> Profile Photo</label>
+
+          <!-- preview (hidden until image chosen) -->
+          <div id="imagePreviewWrap">
+            <img id="imagePreview" src="" alt="Preview">
+            <div id="removeImage" title="Remove"><i class="bi bi-x"></i></div>
+          </div>
+
+          <!-- drop zone -->
+          <label class="upload-label" for="profileImage" id="uploadZone">
+            <div class="upload-icon"><i class="bi bi-camera-fill"></i></div>
+            <span class="upload-text">Click to upload a photo<br><span style="font-weight:400;color:#5aaa35;">or drag &amp; drop here</span></span>
+            <span class="upload-hint">JPG, PNG or WEBP &nbsp;·&nbsp; Max 5 MB</span>
+          </label>
+
+          <input type="file" id="profileImage" name="image" accept="image/*">
+        </div>
+
+        <!-- DONOR NAME -->
+        <div class="mb-3">
+          <label><i class="bi bi-building me-1"></i> Organization / Donor Name</label>
+          <input type="text" name="donorname" class="form-control" placeholder="Enter donor name" required>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+          <label><i class="bi bi-envelope me-1"></i> Email Address</label>
+          <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <!-- PHONE -->
+        <div class="mb-3">
+          <label><i class="bi bi-phone me-1"></i> Phone Number</label>
+          <input type="text" name="phone" class="form-control" placeholder="Enter phone number" pattern="[6,7,8,9][0-9]{9}" required>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="mb-3">
+          <label><i class="bi bi-house-door me-1"></i> Address</label>
+          <textarea name="address" class="form-control" placeholder="Enter your address" required></textarea>
+        </div>
+
+        <!-- PICKUP LOCATION -->
+        <div class="mb-3">
+          <label><i class="bi bi-geo-alt-fill me-1"></i> Pickup Location</label>
+          <textarea name="pickup_location" class="form-control" placeholder="Enter pickup location" required></textarea>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3 password-container">
+          <label><i class="bi bi-lock me-1"></i> Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password"
+          pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$!]){8,}" title="Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number." required>
+          <i class="bi bi-eye-slash toggle-eye" id="togglePassword"></i>
+        </div>
+
+        <button type="submit" class="btn-register">
+          <i class="bi bi-basket me-2"></i> Register as Donor
+        </button>
+
+        <p class="login-text">Already registered? <a href="/">Sign in</a></p>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* password toggle */
+  document.querySelector("#togglePassword").addEventListener("click", function(){
+    const p = document.querySelector("#password");
+    p.setAttribute("type", p.getAttribute("type") === "password" ? "text" : "password");
+    this.classList.toggle("bi-eye");
+    this.classList.toggle("bi-eye-slash");
+  });
+
+  /* image preview */
+  const fileInput   = document.getElementById("profileImage");
+  const previewWrap = document.getElementById("imagePreviewWrap");
+  const previewImg  = document.getElementById("imagePreview");
+  const uploadZone  = document.getElementById("uploadZone");
+  const removeBtn   = document.getElementById("removeImage");
+
+  fileInput.addEventListener("change", function(){
+    const file = this.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+      previewWrap.style.display = "block";
+      uploadZone.style.display  = "none";
+    };
+    reader.readAsDataURL(file);
+  });
+
+  removeBtn.addEventListener("click", function(){
+    fileInput.value = "";
+    previewImg.src  = "";
+    previewWrap.style.display = "none";
+    uploadZone.style.display  = "flex";
+  });
+
+  /* drag & drop */
+  uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.style.borderColor="#3d8f25"; });
+  uploadZone.addEventListener("dragleave", ()  => { uploadZone.style.borderColor=""; });
+  uploadZone.addEventListener("drop", e => {
+    e.preventDefault();
+    uploadZone.style.borderColor="";
+    const file = e.dataTransfer.files[0];
+    if(file && file.type.startsWith("image/")){
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      fileInput.dispatchEvent(new Event("change"));
+    }
+  });
+</script>
+
+</body>
+</html>

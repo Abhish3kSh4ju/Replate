@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Panel</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+        }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .menu-links {
+            flex: 1;
+        }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i {
+            color: #6ab06a;
+            font-size: 17px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b;
+        }
+
+        /* ───────── MENU BUTTON ───────── */
+
+        .menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2d7a2d;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(50, 120, 50, 0.1);
+        }
+
+        @media (max-width: 992px) {
+            .menu-btn {
+                display: flex;
+            }
+        }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            z-index: 998;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        /* ───────── MAIN CONTENT ───────── */
+
+        .main {
+            margin-left: 260px;
+            padding: 28px 24px;
+        }
+
+        @media (max-width: 992px) {
+            .main {
+                margin-left: 0;
+                padding-top: 70px;
+            }
+        }
+
+        /* ───────── WELCOME BAR ───────── */
+
+        .welcome-bar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(106, 176, 76, 0.2);
+            border-radius: 18px;
+            padding: 22px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(50, 120, 50, 0.07);
+        }
+
+        .welcome-text h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        .welcome-text p {
+            font-size: 13px;
+            color: #6a9e62;
+            margin: 0;
+        }
+
+        .date-badge {
+            background: rgba(106, 176, 76, 0.1);
+            border: 1px solid rgba(106, 176, 76, 0.25);
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-size: 12px;
+            color: #3a7d2c;
+        }
+
+        /* ───────── STAT CARDS ───────── */
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 16px rgba(50, 120, 50, 0.06);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-info h6 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8aaa85;
+        }
+
+        .stat-info h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        /* ───────── TABLE ───────── */
+
+        .table-section {
+            margin-top: 28px;
+        }
+
+        .custom-table-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 4px 18px rgba(50, 120, 50, 0.06);
+        }
+
+        .table-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .table-title h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1e4d1a;
+        }
+
+        .table-title span {
+            font-size: 13px;
+            color: #6a9e62;
+        }
+
+        .custom-table thead {
+            background: rgba(106, 176, 76, 0.12);
+        }
+
+        .custom-table thead th {
+            border: none;
+            padding: 14px;
+            color: #2d7a2d;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .custom-table tbody td {
+            padding: 14px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .food-badge {
+            background: rgba(34, 197, 94, 0.12);
+            color: #15803d;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENU BUTTON -->
+
+    <div class="menu-btn" onclick="toggleMenu()">
+        <i class="bi bi-list"></i>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>Donor Panel</span>
+        </div>
+
+        <div class="menu-links">
+
+            <a href="{% url 'Donorpanel' %}" class="active">
+                <i class="bi bi-house-door-fill"></i> Dashboard
+            </a>
+
+            <a href="{% url 'Donoraddfood' %}">
+                <i class="bi bi-plus-circle-fill"></i> Add Food
+            </a>
+
+            <a href="{% url 'Donorlisting' %}">
+                <i class="bi bi-card-checklist"></i> My Listings
+            </a>
+            <a href="{% url 'Donorrequest' %}">
+                <i class="bi bi-clipboard-check-fill"></i>
+                Requests
+            </a>
+
+            <a href="{% url 'Donornotification' %}">
+                <i class="bi bi-bell-fill"></i> Notifications
+            </a>
+
+            <a href="{% url 'Donorcomplaint' %}">
+                <i class="bi bi-exclamation-circle-fill"></i> Complaints
+            </a>
+
+            <a href="{% url 'Donorfeedback' %}">
+                <i class="bi bi-chat-fill"></i> Feedback
+            </a>
+
+            <a href="{% url 'Donorprofile' %}">
+                <i class="bi bi-person-circle"></i> Profile
+            </a>
+
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main">
+
+        <!-- WELCOME BAR -->
+
+        <div class="welcome-bar">
+
+            <div class="welcome-text">
+                <h2>Welcome back, Donor 👋</h2>
+                <p>Thank you for your generous contributions.</p>
+            </div>
+
+            <div class="date-badge">
+                <i class="bi bi-calendar3 me-1"></i>
+                <span id="today-date"></span>
+            </div>
+
+        </div>
+
+        <!-- STAT CARDS -->
+
+        <div class="row g-3">
+
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon" style="background: rgba(34, 197, 94, 0.12); color: #16a34a;">
+                        <i class="bi bi-box2-heart-fill"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <h6>Total Listings</h6>
+                        <h3>{{ total_listings }}</h3>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.12); color: #2563eb;">
+                        <i class="bi bi-grid-fill"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <h6>Active Listings</h6>
+                        <h3>{{ active_count }}</h3>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="stat-card">
+
+                    <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #dc2626;">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+
+                    <div class="stat-info">
+                        <h6>People Fed</h6>
+                        <h3>150+</h3>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="table-section">
+
+            <div class="custom-table-card">
+
+                <div class="table-title">
+                    <h4>Recent Food Listings</h4>
+                    <span>Updated just now</span>
+                </div>
+
+                <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
+
+                    <table class="table custom-table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Food Listed</th>
+                                <th>Food Type</th>
+                                <th>Quantity</th>
+                                <th>Date & Time</th>
+                                <th>Expiry Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for food in foods %}
+
+                            <tr>
+
+                                <td>
+                                    <img src="{{ food.image.url }}" width="80" height="80"
+                                        style="object-fit: cover; border-radius: 10px;">
+                                </td>
+
+                                <td>{{ food.foodname}}</td>
+
+                                <td>{{ food.foodtype}}</td>
+
+                                <td>{{ food.quantity }}</td>
+
+                                <td>{{ food.time_food_made}}</td>
+
+                                <td>{{ food.expiry_time }}</td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No food listings available
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+
+        // Date
+
+        const dateEl = document.getElementById('today-date');
+
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('en-IN', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Search Toggle
+
+        const searchToggle = document.getElementById("searchToggle");
+        const searchBox = document.getElementById("searchBox");
+
+        if (searchToggle && searchBox) {
+
+            searchToggle.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                if (searchBox.style.display === "flex") {
+                    searchBox.style.display = "none";
+                } else {
+                    searchBox.style.display = "flex";
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Food - RePlate</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img {
+            width: 110px;
+        }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .menu-links {
+            flex: 1;
+        }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i {
+            color: #6ab06a;
+            font-size: 17px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a {
+            color: #c0392b;
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        /* FORM CARD */
+
+        .food-card {
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .food-card h2 {
+            font-weight: 700;
+            color: #198754;
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: none;
+            border-color: #198754;
+        }
+
+        .upload-box {
+            border: 2px dashed #9ad29a;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            background: #f9fff8;
+            transition: 0.3s;
+        }
+
+        .upload-box:hover {
+            background: #f3fff0;
+        }
+
+        .upload-box i {
+            font-size: 50px;
+            color: #198754;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 992px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .food-card {
+                padding: 25px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    2-
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>Donor Panel</span>
+        </div>
+
+        <div class="menu-links">
+
+            <a href="{% url 'Donorpanel' %}">
+                <i class="bi bi-house-door-fill"></i>
+                Dashboard
+            </a>
+
+            <a href="{% url 'Donorpanel' %}" class="active">
+                <i class="bi bi-plus-circle-fill"></i>
+                Add Food
+            </a>
+
+            <a href="{% url 'Donorlisting' %}">
+                <i class="bi bi-card-checklist"></i>
+                My Listings
+            </a>
+
+            <a href="#">
+                <i class="bi bi-clipboard-check-fill"></i>
+                Requests
+            </a>
+
+            <a href="{% url 'Donornotification' %}">
+                <i class="bi bi-bell-fill"></i>
+                Notifications
+            </a>
+
+            <a href="{% url 'Donorcomplaint' %}">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                Complaints
+            </a>
+
+            <a href="{% url 'Donorfeedback' %}">
+                <i class="bi bi-chat-fill"></i>
+                Feedback
+            </a>
+
+            <a href="{% url 'Donorprofile' %}">
+                <i class="bi bi-person-circle"></i>
+                Profile
+            </a>
+
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}">
+                <i class="bi bi-box-arrow-right"></i>
+                Logout
+            </a>
+        </div>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main-content">
+
+        <div class="food-card">
+
+            <h2>
+                <i class="bi bi-plus-circle-fill me-2"></i>
+                Add Food Details
+            </h2>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                    <!-- FOOD IMAGE -->
+
+                    <div class="col-lg-12 mb-4">
+
+                        <label class="form-label">
+                            Upload Food Image
+                        </label>
+
+                        <div class="upload-box">
+
+                            <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                            <h5 class="mb-3">
+                                Upload Food Photo
+                            </h5>
+
+                            <input type="file" name="image" class="form-control">
+
+                        </div>
+
+                    </div>
+
+                    <!-- FOOD NAME -->
+
+                    <div class="col-lg-6 mb-4">
+
+                        <label class="form-label">
+                            Food Name
+                        </label>
+
+                        <input type="text" class="form-control" name="foodname" placeholder="Enter food name">
+
+                    </div>
+
+                    <!-- FOOD TYPE -->
+
+                    <div class="col-lg-6 mb-4">
+
+                        <label class="form-label">
+                            Food Type
+                        </label>
+
+                        <select class="form-select" name="foodtype">
+
+                            <option selected disabled>
+                                Select food type
+                            </option>
+
+                            <option>Veg</option>
+
+                            <option>Non-Veg</option>
+
+                            <option>Snacks</option>
+
+                            <option>Dessert</option>
+                            
+                            <option>Bakery</option>
+
+                            <option>Beverage</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- QUANTITY -->
+
+                    <div class="col-lg-6 mb-4">
+
+                        <label class="form-label">
+                            Quantity
+                        </label>
+
+                        <input type="text" class="form-control" name="quantity" placeholder="Example : 10 Plates">
+
+                    </div>
+
+                    <!-- FOOD MADE TIME -->
+
+                    <div class="col-lg-6 mb-4">
+
+                        <label class="form-label">
+                            Time Food Made
+                        </label>
+
+                        <input type="datetime-local" name="time_food_made" class="form-control">
+
+                    </div>
+
+                    <!-- EXPIRY -->
+
+                    <div class="col-lg-12 mb-4">
+
+                        <label class="form-label">
+                            Expiry Time
+                        </label>
+
+                        <input type="datetime-local" name="expiry_time" class="form-control">
+
+                    </div>
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="col-lg-12 mb-4">
+
+                        <label class="form-label">
+                            Food Description
+                        </label>
+
+                        <textarea class="form-control" rows="5" name="description" placeholder="Write food details here..."></textarea>
+
+                    </div>
+
+                    <!-- SUBMIT BUTTON -->
+
+                    <div class="col-lg-12">
+
+                        <button class="btn btn-success w-100 submit-btn">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Submit Food Details
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

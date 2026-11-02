@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Replate</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: #f0f7ee;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0; top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(106, 176, 76, 0.2);
+            box-shadow: 4px 0 24px rgba(50, 120, 50, 0.07);
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.18);
+            margin-bottom: 14px;
+        }
+
+        .sidebar-brand img { width: 110px; }
+
+        .sidebar-brand span {
+            font-size: 10px;
+            font-weight: 600;
+            color: #7ab870;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .menu-links { flex: 1; }
+
+        .sidebar a {
+            color: #3a4a3a;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar a i { color: #6ab06a; font-size: 17px; }
+
+        .sidebar a:hover {
+            background: rgba(100, 180, 100, 0.1);
+            color: #2d7a2d;
+        }
+
+        .sidebar a.active {
+            background: rgba(100, 180, 100, 0.12);
+            color: #2d7a2d;
+            font-weight: 600;
+        }
+
+        .sidebar-logout {
+            border-top: 1px solid rgba(106, 176, 76, 0.15);
+            padding-top: 15px;
+        }
+
+        .sidebar-logout a { color: #c0392b; }
+        .sidebar-logout a i { color: #c0392b; }
+
+
+        .menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px; left: 15px;
+            font-size: 26px;
+            color: #2d7a2d;
+            z-index: 1000;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            width: 40px; height: 40px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(50, 120, 50, 0.1);
+        }
+
+        @media (max-width: 992px) { .menu-btn { display: flex; } }
+
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            z-index: 998;
+        }
+
+        #overlay.active { display: block; }
+
+        /* ── MAIN ── */
+        .main { margin-left: 240px; padding: 28px 24px; min-height: 100vh; transition: margin-left 0.3s; }
+
+        @media (max-width: 992px) { .main { margin-left: 0; padding-top: 64px; } }
+
+        .section-heading { font-size: 24px; font-weight: 700; color: #1e4d1a; margin-bottom: 24px; }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 176, 76, 0.18);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(50, 120, 50, 0.06);
+            margin-bottom: 24px;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-custom {
+            background: transparent;
+            border: 1.5px solid #6abf47;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #3d8f25;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(60, 140, 36, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s, opacity 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-custom:hover,
+        .btn-custom.active {
+            background: linear-gradient(135deg, #6abf47, #3d8f25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(60, 140, 36, 0.3);
+            opacity: 0.95;
+            color: white;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(106, 176, 76, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #3a4a3a;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            resize: vertical;
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-color: #6abf47;
+            box-shadow: 0 0 0 3px rgba(106, 191, 71, 0.15);
+        }
+
+        .form-label-custom { font-size: 14px; font-weight: 500; color: #1e4d1a; margin-bottom: 8px; display: block; }
+        .target-label { font-size: 13px; font-weight: 500; color: #6ab06a; margin-bottom: 14px; display: block; }
+        .feedback-form { display: none; }
+        .feedback-form.active { display: block; }
+
+        /* ── SEARCHABLE DONOR DROPDOWN ── */
+        .donor-select-wrapper { position: relative; margin-bottom: 10px; }
+
+        .donor-select-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(106, 176, 76, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #3a4a3a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .donor-select-box:hover,
+        .donor-select-box.open {
+            border-color: #6abf47;
+            box-shadow: 0 0 0 3px rgba(106, 191, 71, 0.15);
+        }
+
+        .donor-select-box .placeholder { color: #aaa; }
+        .donor-select-box .selected-text { color: #1e4d1a; font-weight: 500; }
+        .donor-select-box .arrow-icon { font-size: 18px; color: #6ab06a; transition: transform 0.2s; flex-shrink: 0; }
+        .donor-select-box.open .arrow-icon { transform: rotate(180deg); }
+
+        .donor-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0; right: 0;
+            background: white;
+            border: 1px solid rgba(106, 176, 76, 0.25);
+            border-radius: 12px;
+            box-shadow: 0 10px 28px rgba(50, 120, 50, 0.13);
+            z-index: 200;
+            overflow: hidden;
+            animation: dropAnim 0.18s ease;
+        }
+
+        .donor-dropdown.open { display: block; }
+
+        @keyframes dropAnim {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .donor-search-row {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .donor-search-row i { color: #6ab06a; font-size: 15px; flex-shrink: 0; }
+
+        .donor-search-row input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            color: #3a4a3a;
+            background: transparent;
+        }
+
+        .donor-search-row input::placeholder { color: #aaa; }
+
+        .donor-list { max-height: 230px; overflow-y: auto; }
+        .donor-list::-webkit-scrollbar { width: 5px; }
+        .donor-list::-webkit-scrollbar-thumb { background: rgba(106, 176, 76, 0.3); border-radius: 10px; }
+
+        .donor-option {
+            padding: 10px 16px;
+            font-size: 13.5px;
+            color: #3a4a3a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.15s;
+        }
+
+        .donor-option:hover { background: rgba(100, 180, 100, 0.1); }
+        .donor-option.selected { background: rgba(100, 180, 100, 0.15); color: #2d7a2d; font-weight: 500; }
+
+        .donor-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a8d88a, #6abf47);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .donor-option-info { display: flex; flex-direction: column; flex: 1; }
+        .donor-option-name { font-size: 13.5px; line-height: 1.3; }
+        .donor-option-meta { font-size: 11px; color: #9ab09a; }
+        .donor-no-results { padding: 18px; text-align: center; color: #aaa; font-size: 13px; }
+
+        /* Selected Badge */
+        .selected-badge {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(106, 191, 71, 0.07);
+            border: 1px solid rgba(106, 191, 71, 0.22);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 10px;
+        }
+
+        .selected-badge.show { display: flex; }
+
+        .badge-av {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a8d88a, #6abf47);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .badge-info { flex: 1; }
+        .badge-name { font-size: 14px; font-weight: 500; color: #1e4d1a; }
+        .badge-sub { font-size: 12px; color: #6ab06a; }
+
+        .badge-clear {
+            cursor: pointer;
+            color: #c0392b;
+            font-size: 17px;
+            transition: transform 0.15s;
+        }
+
+        .badge-clear:hover { transform: scale(1.2); }
+
+        /* ── STAR RATING ── */
+        .star-rating-wrapper { margin-bottom: 20px; }
+
+        .star-group {
+            display: flex;
+            gap: 4px;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            margin-bottom: 6px;
+        }
+
+        .star-group input[type="radio"] { display: none; }
+
+        .star-group label {
+            font-size: 34px;
+            color: rgba(106, 176, 76, 0.25);
+            cursor: pointer;
+            transition: color 0.15s, transform 0.1s;
+            line-height: 1;
+            user-select: none;
+        }
+
+        .star-group label:hover,
+        .star-group label:hover ~ label,
+        .star-group input[type="radio"]:checked ~ label { color: #f5a623; }
+
+        .star-group label:hover { transform: scale(1.15); }
+        .star-hint { font-size: 12px; font-weight: 500; color: #6ab06a; min-height: 18px; }
+
+        /* ── TABLE ── */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0; background: transparent; }
+
+        .table-custom th {
+            background: rgba(106, 176, 76, 0.1);
+            color: #1e4d1a;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 2px solid rgba(106, 176, 76, 0.2);
+        }
+
+        .table-custom th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .table-custom th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+        .table-custom td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #3a4a3a;
+            border-bottom: 1px solid rgba(106, 176, 76, 0.1);
+            vertical-align: middle;
+        }
+
+        .table-wrapper { overflow-x: auto; }
+    </style>
+</head>
+
+<body>
+
+    <div class="menu-btn" onclick="toggleMenu()">
+        <i class="bi bi-list"></i>
+    </div>
+
+    <div id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <img src="../static/Re_plate logo.png" alt="Replate Logo">
+            <span>User Panel</span>
+        </div>
+
+        <div class="menu-links">
+            <a href="{% url 'Userpanel' %}"><i class="bi bi-house-door-fill"></i> Dashboard</a>
+            <a href="{% url 'Userprofile' %}"><i class="bi bi-person-circle"></i> My Profile</a>
+            <a href="{% url 'Orders' %}"><i class="bi bi-bag-fill"></i> Orders</a>
+            <a href="{% url 'Usernotification' %}"><i class="bi bi-bell-fill"></i> Notifications</a>
+            <a href="{% url 'Usercomplaints' %}"><i class="bi bi-exclamation-circle-fill"></i> Complaints</a>
+            <a href="{% url 'Userfeedback' %}" class="active"><i class="bi bi-chat-fill"></i> Feedback</a>
+        </div>
+
+        <div class="sidebar-logout">
+            <a href="{% url 'Logout' %}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+        <h1 class="section-heading">Feedback</h1>
+
+        <div class="content-card">
+
+            <!-- Tab Buttons -->
+            <div class="mb-4 d-flex gap-2">
+                <button type="button" class="btn-custom active" id="btn-donor" onclick="switchTarget('donor')">Donor</button>
+                <button type="button" class="btn-custom" id="btn-admin" onclick="switchTarget('admin')">Admin</button>
+            </div>
+
+            <!-- ── DONOR FORM ── -->
+            <!-- ── DONOR FORM ── -->
+
+<div class="feedback-form active" id="form-donor">
+
+    <span class="target-label">
+        Feedback directed at: Donor
+    </span>
+
+    <form method="POST" action="/Sendfeedbackdonor">
+
+        {% csrf_token %}
+
+        <!-- SELECT DONOR -->
+
+        <div class="mb-4">
+
+            <label class="form-label-custom">
+                Select Donor :
+            </label>
+
+            <select
+                name="donorid"
+                class="form-control-custom"
+                required>
+
+                <option value="">
+                    Select Donor
+                </option>
+
+                {% for i in donor %}
+
+                <option value="{{ i.id }}">
+                    {{ i.donorname }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <!-- STAR RATING -->
+
+        <div class="star-rating-wrapper mb-4">
+
+            <label class="form-label-custom">
+                Rate your experience :
+            </label>
+
+            <div class="star-group">
+
+                <input type="radio" name="rating" id="d5" value="5" required>
+                <label for="d5">★</label>
+
+                <input type="radio" name="rating" id="d4" value="4">
+                <label for="d4">★</label>
+
+                <input type="radio" name="rating" id="d3" value="3">
+                <label for="d3">★</label>
+
+                <input type="radio" name="rating" id="d2" value="2">
+                <label for="d2">★</label>
+
+                <input type="radio" name="rating" id="d1" value="1">
+                <label for="d1">★</label>
+
+            </div>
+
+        </div>
+
+        <!-- FEEDBACK -->
+
+        <div class="mb-4">
+
+            <label class="form-label-custom">
+                Enter Your Feedback here :
+            </label>
+
+            <textarea
+                name="feedback"
+                rows="6"
+                class="form-control-custom"
+                placeholder="Write your feedback..."
+                required></textarea>
+
+        </div>
+
+        <button type="submit" class="btn-custom active">
+            Submit Feedback
+        </button>
+
+    </form>
+
+</div>
+
+            <!-- ── ADMIN FORM ── -->
+            <div class="feedback-form" id="form-admin">
+                <span class="target-label">Feedback directed at: Admin</span>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="feedback_target" value="admin">
+
+                    <!-- Star Rating -->
+                    <div class="star-rating-wrapper mb-4">
+                        <label class="form-label-custom">Rate your experience :</label>
+                        <div class="star-group">
+                            <input type="radio" name="rating" id="a5" value="5" required>
+                            <label for="a5" title="Excellent">★</label>
+                            <input type="radio" name="rating" id="a4" value="4">
+                            <label for="a4" title="Good">★</label>
+                            <input type="radio" name="rating" id="a3" value="3">
+                            <label for="a3" title="Okay">★</label>
+                            <input type="radio" name="rating" id="a2" value="2">
+                            <label for="a2" title="Poor">★</label>
+                            <input type="radio" name="rating" id="a1" value="1">
+                            <label for="a1" title="Terrible">★</label>
+                        </div>
+                        <p class="star-hint" id="hint-admin">Select a rating</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="feedback-admin" class="form-label-custom">Enter Your Feedback here :</label>
+                        <textarea id="feedback-admin" name="feedback" rows="6" class="form-control-custom"
+                            placeholder="Write your feedback about the admin here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-custom active">Submit Feedback</button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Feedback History Table -->
+        <div class="content-card">
+            <div class="table-wrapper">
+                <table class="table-custom">
+                    <tr>
+                        <th>S.NO</th>
+                        <th>Donor / Target</th>
+                        <th>Feedback</th>
+                        <th>Rating</th>
+                        <th>Role</th>
+                        <th>Date</th>
+                        <th>Reply</th>
+                    </tr>
+                    {% for fb in feedbacks %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{% if fb.DONORID %}{{ fb.DONORID.donorname }}{% else %}Admin{% endif %}</td>
+                        <td>{{ fb.feedback }}</td>
+                        <td>{{ fb.rating|floatformat:1 }}/5</td>
+                        <td>{% if fb.DONORID %}DONOR{% else %}ADMIN{% endif %}</td>
+                        <td>{{ fb.date }}</td>
+                        <td>{{ fb.reply|default:"Pending" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align:center; color:#aaa; padding:20px;">No feedback submitted yet.</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ── SIDEBAR ── */
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+            document.getElementById("overlay").classList.toggle("active");
+        }
+
+        function switchTarget(target) {
+            document.getElementById('btn-donor').classList.toggle('active', target === 'donor');
+            document.getElementById('btn-admin').classList.toggle('active', target === 'admin');
+            document.getElementById('form-donor').classList.toggle('active', target === 'donor');
+            document.getElementById('form-admin').classList.toggle('active', target === 'admin');
+        }
+
+
+
+        /* ── STAR RATING HINTS ── */
+        const ratingLabels = ['', 'Terrible', 'Poor', 'Okay', 'Good', 'Excellent'];
+
+        [['donor', 'd'], ['admin', 'a']].forEach(function ([target, prefix]) {
+            for (let i = 1; i <= 5; i++) {
+                const inp = document.getElementById(prefix + i);
+                if (inp) {
+                    inp.addEventListener('change', function () {
+                        document.getElementById('hint-' + target).textContent =
+                            ratingLabels[this.value] + ' (' + this.value + '/5)';
+                    });
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
